@@ -1,0 +1,118 @@
+---
+title: "Assignment 1-3"
+author: "Allyson Busch"
+date: "August 27, 2019"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+I imported the data, renamed the columns and then eliminated columns I did not want to work with.
+
+```{r dataset}
+
+data <- read.table("ehresp_2014.csv", sep = ',', header = TRUE)
+
+names(data) <- c("Household ID", "Individual ID", "Household Income", "BMI", "Change in Household", "Income and Poverty Threshold", "Change in Spouse Employment", "Time Spent Eating", "Time Spent Secondary Eating", "Height Flag", "Weight Flag", "Diet or Regular", "Drink Other Water", "Distracted Eating", "Eating During Activity", "Time Distracted Eating", "Time Distracted Eating Last Day", "Exercise", "Time Exercising" )
+
+df <- data[c(1,3,4,8,9,13,18,19)]
+
+```
+
+## 1. Import, Plot, Summarize, and Save Data
+
+Using the Bureau of Labor Statistics data, choose a dataset that interests you. Then generate summary statistics for 2 variables, plot some of the features (e.g., histograms, box plots, density plots, etc.) of several variables, and save the data locally as CSV files. 
+
+```{r summary statistics}
+summary(df)
+```
+
+I generated summary statistics for all 8 variables I decided to keep. To explain how some of these variables are set up, I'll go through them. The Household ID is just to keep an identifier of each case. 
+Household Income is on a scale with 1 being over the poverty threshold, 2 being under, and 3 being at the threshold. 
+BMI is the Body Max Index and should be the actual number.
+Time Spent Eating is in minutes and is time eating while not doing another activity. Alternatively, Time Spent Secondary Eating is also in minutes but is time spent eating while completing another activity. 
+Drink Other Than Water has two answers: 1: yes, 2: no.
+Exercise has two answers: 1: yes, 2: no.
+Time Exercising is in minutes, and includes the past 7 days. 
+
+``` {r histograms}
+
+hist(df$BMI,
+     main="Histogram of BMI",
+     xlab="BMI")
+
+```
+
+``` {r histogram 2}
+
+hist(df$`Time Spent Eating`,
+     main="Histogram of Time Spent Eating",
+     xlab="Time Spent Eating")
+
+```
+
+``` {r boxplot}
+
+boxplot(df$BMI, data=df, main="BMI")
+
+```
+
+## 2. Explore Some Bivariate Relations
+
+Use the same dataset within the same website to explore some bivariate relations (e.g., bivariate plot, correlation, table cross table etc.)
+
+```{r bivariate plot}
+plot(df$BMI, df$`Time Spent Eating`, main="BMI vs. Time Spent Eating", xlab = "BMI", ylab = "Time Spent Eating")
+```
+
+``` {r correlation}
+
+cor(df)
+
+```
+
+The only notable correlation I see is Exercise and Time Exercising, so let's explore that. 
+
+``` {r exercise}
+
+library(ggplot2)
+
+ggplot(df, aes(x=Exercise, y='Time Exercising')) + 
+  geom_point(shape=18, color="blue")+
+  geom_smooth(method=lm, se=FALSE, linetype="dashed",
+             color="darkred")
+
+```
+
+Or, on the other hand, there doesn't seem to be a correlation. 
+
+``` {r scatterplot}
+
+ggplot(df, aes(y=BMI, x='Household Income')) + 
+  geom_point(shape=18, color="blue")
+
+```
+
+## 3. Organize a Data Report
+
+Generate a summary report. Make sure to include: summary for each variable, structure and type of data elements, discuss four results of your data. 
+
+``` {r summary report}
+
+summary(df)
+
+
+```
+
+Four results of the data: 
+
+1. BMI tends to follow a bell curve, at least in this population. 
+2. THere is a very low correlation between most of the variables, including between BMI and the Time Spent Eating. 
+3. There is little to no correlation between whether someone exercises and how much time they spend exercising.
+4. There is little correlation to what someone's income is and their BMI.
+
+Going back, I would rather the data have true values for income and other variables, as I feel that would lead to more telling data elements. 
